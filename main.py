@@ -1,10 +1,5 @@
-from solutions import day1, day2, day3
+from solutions import Day03
 
-print(day1.part1())
-print(day1.part2())
-
-print(day2.part1())
-print(day2.part2())
-
-print(day3.part1())
-print(day3.part2())
+day = Day03.Day03()
+day.part1()
+day.part2()

@@ -1,6 +1,8 @@
 import re
 from sys import maxsize
 
+from Day import Day
+
 
 STRING_NUM_MAPPING = {
     "one": "1",
@@ -25,15 +27,6 @@ STRING_NUM_MAPPING = {
 }
 
 
-def part1():
-    with open('inputs/day1.txt') as input:
-        sum = 0
-        for line in input:
-            digits = re.findall('\d', line)
-            sum += int(digits[0] + digits[-1])
-    return sum
-
-
 def find(needle, haystack):
     try:
         return haystack.index(needle), needle
@@ -49,14 +42,21 @@ def find_reverse(needle, haystack):
         return -1, None
 
 
-def part2():
-    with open('inputs/day1.txt') as input:
+class Day01(Day):
+    def part1(self):
         sum = 0
-        for line in input:
+        for line in self.get_input_lines():
+            digits = re.findall('\d', line)
+            sum += int(digits[0] + digits[-1])
+        Day.answer(sum)
+
+    def part2(self):
+        sum = 0
+        for line in self.get_input_lines():
             firstkey = min(find(word, line) for word in STRING_NUM_MAPPING)
             secondkey = max(find_reverse(word, line) for word in STRING_NUM_MAPPING)
             firstdigit = STRING_NUM_MAPPING[firstkey[1]]
             lastdigit = STRING_NUM_MAPPING[secondkey[1]]
             result = int(firstdigit + lastdigit)
             sum += int(result)
-    return sum
+        Day.answer(sum)

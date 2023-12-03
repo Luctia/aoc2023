@@ -1,5 +1,8 @@
+from Day import Day
+
+
 def get_game_hands(game):
-    game = game.split(":")[1][1:-1]
+    game = game.split(":")[1][1:]
     hands = game.split("; ")
     return hands
 
@@ -42,23 +45,21 @@ def qualifies(game):
     return min_colors[0] <= 12 and min_colors[1] <= 13 and min_colors[2] <= 14
 
 
-def part1():
-    with open("inputs/day2.txt") as data:
-        sum = 0
-        for line in data:
-            if qualifies(line):
-                sum += int(line.split(" ")[1].split(":")[0])
-        return sum
-
-
 def get_power(game):
     min_colors = get_min_colors(game)
     return min_colors[0] * min_colors[1] * min_colors[2]
 
 
-def part2():
-    with open("inputs/day2.txt") as data:
-        sum = 0
-        for line in data:
-            sum += get_power(line)
-        return sum
+class Day02(Day):
+    def part1(self):
+        val = 0
+        for line in self.get_input_lines():
+            if qualifies(line):
+                val += int(line.split(" ")[1].split(":")[0])
+        self.answer(val)
+
+    def part2(self):
+        val = 0
+        for line in self.get_input_lines():
+            val += get_power(line)
+        self.answer(val)

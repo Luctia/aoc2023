@@ -1,5 +1,7 @@
 import re
 
+from Day import Day
+
 
 def build_adjacent_tiles(location):
     return [
@@ -33,23 +35,6 @@ def is_relevant_part_number(location, match, lines, pattern=r'\d|\.|\n'):
     return False
 
 
-def part1():
-    with open("inputs/day3.txt") as data:
-        y = 0
-        matches = dict()
-        lines = []
-        for line in data:
-            lines.append(line)
-            for match in re.finditer(r'\d+', line):
-                matches[(match.start(), y)] = match
-            y += 1
-        relevantPartNumbers = []
-        for match in matches:
-            if is_relevant_part_number(match, matches[match], lines):
-                relevantPartNumbers.append(int(matches[match].group()))
-        return sum(relevantPartNumbers)
-
-
 def has_intersection(star_co, match_location, match):
     star_adjacent_coordinates = build_adjacent_tiles(star_co)
     for i in range(len(match.group())):
@@ -59,15 +44,29 @@ def has_intersection(star_co, match_location, match):
     return False
 
 
-def part2():
-    with open("inputs/day3.txt") as data:
+class Day03(Day):
+
+    def part1(self):
         y = 0
         matches = dict()
-        lines = []
+        lines = self.get_input_lines()
+        for line in lines:
+            for match in re.finditer(r'\d+', line):
+                matches[(match.start(), y)] = match
+            y += 1
+        relevantPartNumbers = []
+        for match in matches:
+            if is_relevant_part_number(match, matches[match], lines):
+                relevantPartNumbers.append(int(matches[match].group()))
+        self.answer(sum(relevantPartNumbers))
+
+    def part2(self):
+        y = 0
+        matches = dict()
+        lines = self.get_input_lines()
         stars = []
-        sum = 0
-        for line in data:
-            lines.append(line)
+        val = 0
+        for line in lines:
             for match in re.finditer(r'\d+', line):
                 matches[(match.start(), y)] = match
             for match in re.finditer(r'\*', line):
@@ -79,5 +78,5 @@ def part2():
                 if has_intersection(star, match, matches[match]):
                     intersecting.append(matches[match])
             if len(intersecting) == 2:
-                sum += int(intersecting[0].group()) * int(intersecting[1].group())
-        return sum
+                val += int(intersecting[0].group()) * int(intersecting[1].group())
+        self.answer(val)
