@@ -10,7 +10,7 @@ def get_actual_numbers(ticket):
 
 
 def get_card_number(card):
-    return int(card.split( )[1].split(":")[0])
+    return int(card.split()[1].split(":")[0])
 
 
 def intersection(lst1, lst2):
@@ -41,19 +41,17 @@ class Day04(Day):
     def part2(self):
         number_of_wins = dict()
         lines = self.get_input_lines()
-        resulting_cards = []
+        resulting_cards = dict()
         for line in lines:
             card_number = get_card_number(line)
-            resulting_cards.append(card_number)
+            resulting_cards[card_number] = 1
             winning_numbers = get_winning_numbers(line)
             actual_numbers = get_actual_numbers(line)
             matching = len(intersection(winning_numbers, actual_numbers))
             number_of_wins[card_number] = matching
-        i = 0
-        while i < len(resulting_cards):
-            card_number = resulting_cards[i]
+        for card_number in resulting_cards.keys():
+            amount_of_cards = resulting_cards[card_number]
             wins = number_of_wins[card_number]
             for card in get_next_cards(card_number, wins, lines):
-                resulting_cards.append(card)
-            i += 1
-        self.answer(len(resulting_cards))
+                resulting_cards[card] += amount_of_cards
+        self.answer(sum(resulting_cards.values()))
