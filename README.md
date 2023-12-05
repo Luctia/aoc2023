@@ -9,7 +9,7 @@ Here you will find my Advent of Code implementations of 2023. For this year, I'v
 | Day 2         | :heavy_check_mark: :heavy_check_mark: |         |
 | Day 3         | :heavy_check_mark: :heavy_check_mark: |         |
 | Day 4         | :heavy_check_mark: :heavy_check_mark: |         |
-| Day 5         | :x: :x:                               |         |
+| Day 5         | :heavy_check_mark: :x:                |         |
 | Day 6         | :x: :x:                               |         |
 | Day 7         | :x: :x:                               |         |
 | Day 8         | :x: :x:                               |         |
