@@ -12,6 +12,7 @@ def get_map(input_lines, type):
         line = input_lines[i].split(" ")
         mapped.append((int(line[0]), int(line[1]), int(line[2])))
         i += 1
+    mapped.sort(key=lambda x: x[1])
     return mapped
 
 
@@ -21,7 +22,7 @@ def lookup_in_map(value, mapped):
     for tup in mapped:
         if tup[1] <= value < tup[1] + tup[2]:
             return tup[0] + value - tup[1]
-    return None
+    return value
 
 
 def get_seed_location(seed, input_lines):
@@ -33,6 +34,41 @@ def get_seed_location(seed, input_lines):
     temp_hum = get_map(input_lines, "temperature-to-humidity map:")
     hum_loc = get_map(input_lines, "humidity-to-location map:")
     return lookup_in_map(lookup_in_map(lookup_in_map(lookup_in_map(lookup_in_map(lookup_in_map(lookup_in_map(seed, seed_soil), soil_fert), fert_wat), wat_light), light_temp), temp_hum), hum_loc)
+
+
+def get_maps(input_lines):
+    return [
+        get_map(input_lines, "seed-to-soil map:"),
+        get_map(input_lines, "soil-to-fertilizer map:"),
+        get_map(input_lines, "fertilizer-to-water map:"),
+        get_map(input_lines, "water-to-light map:"),
+        get_map(input_lines, "light-to-temperature map:"),
+        get_map(input_lines, "temperature-to-humidity map:"),
+        get_map(input_lines, "humidity-to-location map:")
+    ]
+
+
+def get_new_ranges(ranges, m):
+    new_ranges = []
+    for start, end in ranges:
+        i = 0
+        while start < end:
+            dest, source, rng = m[i]
+            i += 1
+            if start < source:
+                # Beginning of range falls off
+                new_ranges.append((start, source - 1))
+                start = source
+            if start < source + rng:
+                # Some part of the range is in this mapping
+                new_entry = (dest + start - source, dest + end - source if end < source + rng else dest + rng)
+                new_ranges.append(new_entry)
+                start = source + rng
+            if i >= len(m) and start < end:
+                # We've reached the end of the map. Put leftovers back as literals
+                new_ranges.append((start, end))
+                break
+    return sorted(new_ranges)
 
 
 class Day05(Day):
@@ -48,56 +84,12 @@ class Day05(Day):
 
     def part2(self):
         input_lines = self.get_input_lines()
+        maps = get_maps(input_lines)
         seeds = [int(seed) for seed in input_lines[0].split(" ")[1:]]
         seed_ranges = []
-        for i in range(len(seeds) - 1):
+        for i in range(0, len(seeds) - 1, 2):
             seed_ranges.append((seeds[i], seeds[i] + seeds[i+1] - 1))
-
-        # lowest_range = None
-        # lowest_found = maxsize
-        #
-        # for r in seed_ranges:
-        #     for num in range(r[0], r[1], (r[1] - r[0]) // 10):
-        #         loc = get_seed_location(num, input_lines)
-        #         if loc is not None and loc < lowest_found:
-        #             lowest_found = loc
-        #             lowest_range = r
-
-        lowest_range = None
-        lowest_found = maxsize
-        i = 0
-        for r in seed_ranges:
-            i += 1
-            print("Considering range " + str(i))
-            print("  (lowest so far: " + str(lowest_found) + ")")
-            picks = [num for num in range(r[0], r[1] + 4, (r[1] - r[0]) // 4)]
-            for pick in range(0, len(picks) - 1):
-                print("    pick " + str(pick + 1) + " of 4")
-                rrange = (picks[pick], picks[pick + 1])
-
-                if get_seed_location(rrange[0], input_lines) is None:
-                    pass
-                if get_seed_location(rrange[1], input_lines) is None:
-                    while get_seed_location(rrange[1], input_lines) is None:
-                        rrange = rrange[0], rrange[1] - 100
-
-                diff = rrange[1] - rrange[0]
-                while diff > 1:
-                    left_guess_seed = rrange[0] + diff // 4
-                    right_guess_seed = rrange[0] + (diff // 4) * 3
-                    left_guess_location = get_seed_location(left_guess_seed, input_lines)
-                    while left_guess_location is None:
-                        left_guess_seed = left_guess_seed + 10000
-                        left_guess_location = get_seed_location(left_guess_seed, input_lines)
-                    right_guess_location = get_seed_location(right_guess_seed, input_lines)
-                    while right_guess_location is None:
-                        right_guess_seed = right_guess_seed - 10000
-                        right_guess_location = get_seed_location(right_guess_seed, input_lines)
-                    if left_guess_location < right_guess_location:
-                        rrange = rrange[0], rrange[0] + diff // 2
-                    else:
-                        rrange = rrange[0] + diff // 2, rrange[1]
-                    diff = rrange[1] - rrange[0]
-                lowest_found = min([lowest_found, left_guess_location, right_guess_location])
-
-        self.answer(lowest_found)
+        ranges = sorted(seed_ranges)
+        for m in maps:
+            ranges = get_new_ranges(ranges, m)
+        self.answer(min(ranges)[0])

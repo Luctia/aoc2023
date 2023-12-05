@@ -12,8 +12,8 @@ class Day(ABC):
         file.close()
         return result
 
-    def get_input_lines(self):
-        return self.get_input().split("\n")
+    def get_input_lines(self, subtype=None):
+        return self.get_input(subtype).split("\n")
 
     @abstractmethod
     def part1(self):
