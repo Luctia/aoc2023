@@ -1,5 +1,4 @@
 from solutions import Day06
 
 day = Day06.Day06()
-day.part1()
-day.part2()
+day.run_all((288, 71503))
