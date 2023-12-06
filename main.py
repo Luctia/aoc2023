@@ -1,5 +1,5 @@
-from solutions import Day05
+from solutions import Day06
 
-day = Day05.Day05()
+day = Day06.Day06()
 day.part1()
 day.part2()
