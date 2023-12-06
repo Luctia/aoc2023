@@ -4,13 +4,21 @@ import functools
 from Day import Day
 
 
-def get_win_options(mills, record):
-    options = dict()
+def get_win_options_amount(mills, record):
+    left_bound = right_bound = -1
+    # Look for left bound
     for button_help_down_for in range(mills):
         distance = (mills - button_help_down_for) * button_help_down_for
         if distance > record:
-            options[button_help_down_for] = distance
-    return options
+            left_bound = button_help_down_for
+            break
+    # Look for right bound
+    for button_help_down_for in range(mills, 0, -1):
+        distance = (mills - button_help_down_for) * button_help_down_for
+        if distance > record:
+            right_bound = button_help_down_for
+            break
+    return right_bound - left_bound + 1
 
 
 class Day06(Day):
@@ -21,7 +29,7 @@ class Day06(Day):
             time_dist[numbers[i]] = numbers[i + len(numbers) // 2]
         product = 1
         for key in time_dist:
-            product *= len(get_win_options(key, time_dist[key]))
+            product *= get_win_options_amount(key, time_dist[key])
         return product
 
     def part2(self, test=False):
@@ -30,5 +38,5 @@ class Day06(Day):
         time_dist[int(functools.reduce(lambda x, y: x + y, numbers[:len(numbers) // 2], ""))] = int(functools.reduce(lambda x, y: x + y, numbers[(len(numbers) // 2):], ""))
         product = 1
         for key in time_dist:
-            product *= len(get_win_options(key, time_dist[key]))
+            product *= get_win_options_amount(key, time_dist[key])
         return product
