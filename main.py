@@ -1,4 +1,4 @@
-from solutions import Day06
+from solutions import Day07
 
-day = Day06.Day06()
-day.run_all((288, 71503))
+day = Day07.Day07()
+day.run_all((6440, 5905))
