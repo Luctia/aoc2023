@@ -3,12 +3,12 @@ from functools import cmp_to_key
 from collections import Counter
 
 
-def get_card_number(card):
+def get_card_number(card, joker=False):
     match card:
         case 'A': return 14
         case 'K': return 13
         case 'Q': return 12
-        case 'J': return 11
+        case 'J': return 1 if joker else 11
         case 'T': return 10
         case _: return int(card)
 
@@ -57,24 +57,14 @@ def compare_hands(hand1, hand2):
     return compare_on_high_card(hand1, hand2)
 
 
-def get_card_number2(card):
-    match card:
-        case 'A': return 14
-        case 'K': return 13
-        case 'Q': return 12
-        case 'J': return 1
-        case 'T': return 10
-        case _: return int(card)
-
-
 def compare_on_high_card2(hand1, hand2):
     i = 0
-    score1 = get_card_number2(hand1[0][i])
-    score2 = get_card_number2(hand2[0][i])
+    score1 = get_card_number(hand1[0][i], joker=True)
+    score2 = get_card_number(hand2[0][i], joker=True)
     while score2 == score1 and i < 5:
         i += 1
-        score1 = get_card_number2(hand1[0][i])
-        score2 = get_card_number2(hand2[0][i])
+        score1 = get_card_number(hand1[0][i], joker=True)
+        score2 = get_card_number(hand2[0][i], joker=True)
     if score1 > score2:
         return 1
     if score2 > score1:
