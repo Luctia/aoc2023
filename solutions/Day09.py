@@ -13,8 +13,8 @@ class Day09(Day):
             while not all([x == 0 for x in sequence[:-1]]):
                 resulting_sequences.append(sequence)
                 new_sequence = []
-                for i in range(len(sequence) - 1):
-                    new_sequence.append(np.abs(sequence[i] - sequence[i + 1]))
+                for i in range(1, len(sequence)):
+                    new_sequence.append(sequence[i] - sequence[i - 1])
                 sequence = new_sequence
             resulting_sequences.append(sequence)
             to_add = 0
@@ -22,9 +22,6 @@ class Day09(Day):
                 to_add = resulting_sequences[i][-1] + to_add
             total += to_add
         return total
-        # too high 1905487493
-        # wrong    1905056679
-        # too low  1239935732
 
     def part2(self, test=False):
         pass
