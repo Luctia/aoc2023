@@ -1,19 +1,20 @@
 from Day import Day
+import numpy as np
 
 
 class Day08(Day):
     def part1(self, test=False):
-        # lines = self.get_input_lines()
-        # instructions = lines[0]
-        # mappings = dict()
-        # for mapping in lines[2:]:
-        #     mappings[mapping[0:3]] = (mapping[7:10], mapping[12:15])
-        # i = 0
-        # location = "AAA"
-        # while location != "ZZZ":
-        #     location = mappings[location][0 if instructions[i % len(instructions)] == "L" else 1]
-        #     i += 1
-        return None
+        lines = self.get_input_lines()
+        instructions = lines[0]
+        mappings = dict()
+        for mapping in lines[2:]:
+            mappings[mapping[0:3]] = (mapping[7:10], mapping[12:15])
+        i = 0
+        location = "AAA"
+        while location != "ZZZ":
+            location = mappings[location][0 if instructions[i % len(instructions)] == "L" else 1]
+            i += 1
+        return i
 
     def part2(self, test=False):
         lines = self.get_input_lines()
@@ -39,14 +40,8 @@ class Day08(Day):
                 node = results_per_node[steps_to_z_per_node[key][0]]
                 steps_to_z_per_node[key] = (node, -1) if steps_to_z_per_node[key][0] == node else ((node, steps) if node.endswith('Z') else (node, 0))
 
-        steps = 1
-        paths = [(node, 0) for node in mappings.keys() if node[-1] == 'A']
-        while not all([path[1] == steps for path in paths]):
-            for i in range(len(paths)):
-                if paths[i][1] < steps:
-                    steps_to_z = steps_to_z_per_node[paths[i][0]]
-                    paths[i] = (steps_to_z[0], paths[i][1] + steps_to_z[1])
-                    if paths[i][1] > steps:
-                        steps = paths[i][1]
-
-        return steps
+        a_steps = [steps_to_z_per_node[s] for s in steps_to_z_per_node if s[-1] == 'A']
+        res = 1
+        for a in a_steps:
+            res = np.lcm(res, a[1])
+        return res

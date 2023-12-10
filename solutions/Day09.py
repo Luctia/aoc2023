@@ -1,5 +1,4 @@
 from Day import Day
-import numpy as np
 
 
 class Day09(Day):
