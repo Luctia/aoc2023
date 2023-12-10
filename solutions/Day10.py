@@ -17,13 +17,12 @@ class Day10(Day):
     def get_loop(self, test=False):
         grid = self.get_input_lines("test" if test else "")
         loop = []
-        start = None
         for y in range(len(grid)):
             for x in range(len(grid[y])):
                 if grid[y][x] == 'S':
-                    # S in an F in both my input and in the testing input. Checking dynamically is possible but messy.
-                    loop.append((y, x, '7'))
-                    start = (y, x, '7')
+                    # S is an F in both my input and in the testing input. Checking dynamically is possible but messy.
+                    loop.append((y, x, 'F'))
+                    start = (y, x, 'F')
         connected = get_connected(loop[0], grid)
         loop = [connected[0]] + loop + [connected[1]]
         while True:
@@ -41,78 +40,24 @@ class Day10(Day):
         return len(self.get_loop(test)) / 2
 
     def part2(self, test=False):
-        loop = self.get_loop(True)
+        loop = self.get_loop()
+        loopmap = dict()
+        for (y, x, z) in loop:
+            loopmap[(y, x)] = z
         total = 0
-        # opening = ['|', 'J', '7'] ADDED -5
-        # closing = ['|', 'F', 'L']
-        for y in range(max([a[0] for a in loop])):
-            closed = True
-            in_line = sorted([(c[1], c[2]) for c in loop if c[0] == y])
-            i = 0
-            opened_at = 0
-            while i < len(in_line) - 1:
-                # if in_line[i][0] != in_line[i + 1][0] - 1 and closed:
-                #     # The tile we're checking has nothing to the right, and we are currently not opened, so it opens.
-                #     closed = False
-                #     opened_at = in_line[i][0] + 1
-                #     # total += in_line[i + 1][0] - in_line[i][0] - 1
-                #     continue
-                if in_line[i][1] == '|':
-                    # Found a pipe, open or close.
-                    if closed:
-                        closed = False
-                        opened_at = in_line[i][0] + 1
-                    else:
-                        closed = True
-                        total += in_line[i][0] - opened_at
-                    i += 1
-                    continue
-                if in_line[i][0] == in_line[i + 1][0] - 1:
-                    # We have two characters next to each other. These (and potentially following) could be a line:
-                    # L---7, L7
-                    # Or self-enclosed:
-                    # F7, L-----J
-                    # In the case that it is a line, we want to open or close.
-                    start_i = i
-                    if in_line[i][1] == 'L':
-                        i += 1
-                        while in_line[i][1] not in ['J', '7']:
-                            i += 1
-                        if in_line[i][1] == 'J':
-                            # This is an L followed by a J: self enclosed.
-                            if not closed:
-                                # We were open, so we should remain open, but we should make sure this part doesn't
-                                #  count.
-                                total -= (in_line[i][0] - in_line[start_i][0] + 1)
-                        if in_line[i][1] == '7':
-                            # This is an L followed by a 7: it is a line. We should toggle open/closed.
-                            if closed:
-                                closed = False
-                                opened_at = in_line[i][0] + 1
-                            else:
-                                # We were open, so we should close but also count.
-                                closed = True
-                                total += in_line[start_i][0] - opened_at
-                    if in_line[i][1] == 'F':
-                        i += 1
-                        while in_line[i][1] not in ['J', '7']:
-                            i += 1
-                        if in_line[i][1] == '7':
-                            # This is an F followed by a 7: self enclosed.
-                            if not closed:
-                                # We were open, so we should remain open, but we should make sure this part doesn't
-                                #  count.
-                                total -= (in_line[i][0] - in_line[start_i][0] + 1)
-                        if in_line[i][1] == 'J':
-                            # This is an F followed by a J: it is a line. We should toggle open/closed.
-                            if closed:
-                                closed = False
-                                opened_at = in_line[i][0] + 1
-                            else:
-                                # We were open, so we should close but also count.
-                                closed = True
-                                total += in_line[start_i][0] - opened_at
-                    i += 1
+        max_y = max([a[0] for a in loop])
+        max_x = max([a[1] for a in loop])
+        for y in range(max_y):
+            opener = None
+            inside = False
+            for x in range(max_x):
+                tile = loopmap.get((y, x))
+                match tile:
+                    case None: total += (1 if inside else 0)
+                    case '|': inside = not inside
+                    case 'F': opener = 'F'
+                    case 'L': opener = 'L'
+                    case '7': inside = (not inside if opener == 'L' else inside)
+                    case 'J': inside = (not inside if opener == 'F' else inside)
+                    case _: pass
         return total
-        # too low  410
-        # too high 889

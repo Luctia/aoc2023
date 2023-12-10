@@ -57,10 +57,10 @@ class Day(ABC):
                     print("Part 2 not implemented yet.\n")
             print("Tests succeeded! (%ss)\n" % total_time)
 
-        # print("Running part 1...")
-        # start_time = time.time()
-        # self.answer(self.part1())
-        # print("(Took %s seconds)\n" % (time.time() - start_time))
+        print("Running part 1...")
+        start_time = time.time()
+        self.answer(self.part1())
+        print("(Took %s seconds)\n" % (time.time() - start_time))
 
         print("Running part 2...")
         start_time = time.time()
