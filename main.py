@@ -1,4 +1,4 @@
-from solutions import Day10
+from solutions import Day11
 
-day = Day10.Day10()
-day.run_all((None, None))
+day = Day11.Day11()
+day.run_all((374, 374))
