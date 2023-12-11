@@ -35,9 +35,9 @@ def get_expansion_points(chart_rows):
     return res
 
 
-def get_expanded_manhattan(c1, c2, expansion_points, expansion_factor=1000000):
+def get_expanded_manhattan(c1, c2, expansion_points, expansion_factor):
     no_of_expansions = 0
-    for row in range(c1[0] if c1[0] < c2[0] else c2[0], c2[0] if c1[0] > c2[0] else c1[0]):
+    for row in range(c1[0] if c1[0] < c2[0] else c2[0], c2[0] if c1[0] < c2[0] else c1[0]):
         if row in expansion_points[0]:
             no_of_expansions += 1
     for col in range(c1[1] if c1[1] < c2[1] else c2[1], c2[1] if c1[1] < c2[1] else c1[1]):
@@ -72,5 +72,5 @@ class Day11(Day):
         distances = 0
         for i in range(len(galaxies)):
             for j in range(i + 1, len(galaxies)):
-                distances += get_expanded_manhattan(galaxies[i], galaxies[j], expansion_points, 1 if test else None)
+                distances += get_expanded_manhattan(galaxies[i], galaxies[j], expansion_points, 2 if test else 1000000)
         return distances
