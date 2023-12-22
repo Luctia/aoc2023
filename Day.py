@@ -5,7 +5,7 @@ import time
 
 
 class Day(ABC):
-    def get_input(self, subtype=None):
+    def get_input(self, subtype=None) -> str:
         subtype = subtype if subtype is not None else ""
         filename = re.search(r"Day\d+", self.__str__()).group() + subtype + ".txt"
         file = open("inputs/" + filename, "r")
@@ -13,7 +13,7 @@ class Day(ABC):
         file.close()
         return result
 
-    def get_input_lines(self, subtype=None):
+    def get_input_lines(self, subtype=None) -> [str]:
         return self.get_input(subtype).split("\n")
 
     @abstractmethod
