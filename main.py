@@ -1,4 +1,4 @@
-from solutions import Day14
+from solutions import Day22
 
-day = Day14.Day14()
-day.run_all((136, None))
+day = Day22.Day22()
+day.run_all((5, None))
